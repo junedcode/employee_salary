@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>My Salary Slip — PayRoll Pro</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: rgba(200,66,26,.08); font-family: 'DM Sans', sans-serif; }
+
+        nav {
+            background-color: black;
+            display: flex;
+            height: 10vh;
+            justify-content: center;
+            border-bottom: 3px solid rgb(160,32,32);
+            align-items: center;
+            width: 100%;
+        }
+        .heading {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #dbd4d4;
+            letter-spacing: -0.5px;
+            margin-right: auto;
+            cursor: pointer;
+            width: 50%;
+            margin-left: 30px;
+        }
+        .nav-right {
+            margin-right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .emp-name-badge {
+            font-family: 'DM Sans', sans-serif;
+            font-size: .88rem;
+            color: #dbd4d4;
+            background: rgba(255,255,255,.08);
+            border: 1px solid rgba(255,255,255,.15);
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+        .btn-logout {
+            background: transparent;
+            border: 1px solid rgba(200,66,26,.7);
+            color: #c8421a;
+            padding: 6px 16px;
+            border-radius: 5px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+        }
+        .btn-logout:hover { background: rgba(200,66,26,.1); }
+
+        #text-color { color: #c8421a; }
+
+        .page-wrap {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .page-header h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #0d0d0d;
+        }
+        .page-header h1 span { color: #c8421a; }
+
+        .btn-print {
+            background: #c8421a;
+            color: #fff;
+            border: none;
+            padding: 11px 28px;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-print:hover { background: #a83516; }
+
+        /* Salary Slip Card */
+        .slip {
+            background: #ffffff;
+            border: 1.5px solid #d8d3c8;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0,0,0,.07);
+        }
+
+        .slip-header {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            padding: 32px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .slip-header .company { color: #fff; }
+        .slip-header .company h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .slip-header .company p {
+            font-size: .82rem;
+            color: #aaa;
+        }
+        .slip-badge {
+            background: rgba(200,66,26,.2);
+            border: 1px solid rgba(200,66,26,.5);
+            color: #e8734a;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: .8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .slip-meta {
+            background: #fdfaf5;
+            border-bottom: 1.5px solid #ede8dc;
+            padding: 20px 36px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+        .meta-item .lbl {
+            font-size: .72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .6px;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+        .meta-item .val {
+            font-size: .95rem;
+            font-weight: 600;
+            color: #0d0d0d;
+        }
+
+        .slip-body { padding: 28px 36px; }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: .82rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7a7468;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #ede8dc;
+        }
+
+        .salary-rows { margin-bottom: 28px; }
+        .salary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 11px 0;
+            border-bottom: 1px dashed #ede8dc;
+            font-size: .92rem;
+        }
+        .salary-row:last-child { border-bottom: none; }
+        .salary-row .s-label { color: #4a4540; }
+        .salary-row .s-val { font-weight: 600; }
+        .s-val.earn { color: #2e7d5e; }
+        .s-val.deduct { color: #c8421a; }
+        .s-val.basic { color: #0d0d0d; }
+
+        .net-row {
+            background: linear-gradient(135deg, #0d0d0d, #1a1a1a);
+            border-radius: 10px;
+            padding: 20px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .net-row .net-label {
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        .net-row .net-val {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #c8421a;
+        }
+
+        .slip-footer {
+            background: #fdfaf5;
+            border-top: 1.5px solid #ede8dc;
+            padding: 16px 36px;
+            text-align: center;
+            font-size: .78rem;
+            color: #aaa;
+        }
+
+         .no-data {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7a7468;
+        }
+        .no-data h3 { font-family: 'Syne', sans-serif; font-size: 1.2rem; margin-bottom: 10px; }
+
+        footer {
+            background: #0d0d0d;
+            color: #bebebe;
+            text-align: center;
+            padding: 24px;
+            font-size: 1rem;
+        }
+
+         @media print {
+            nav, .page-header .btn-print, .btn-logout, footer { display: none !important; }
+            body { background: white; }
+            .page-wrap { padding: 0; max-width: 100%; }
+            .slip { box-shadow: none; border: 1px solid #ccc; }
+            .slip-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .net-row { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="heading" onclick="window.location.href='pro.html'">EMPLOYEE <span id="text-color">PAY </span>SALARY</div>
+            <div class="nav-right">
+                <span class="emp-name-badge" id="nav-emp-name">👤 Employee</span>
+                <button class="btn-logout" id="btn-logout">Logout</button>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-wrap">
+            <div class="page-header">
+                <h1>My <span>Salary Slip</span></h1>
+                <button class="btn-print" onclick="window.print()">🖨️ Print Slip</button>
+            </div>
+
+            <div id="slip-container">
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 <span id="text-color">PayRoll Pro</span> — Employee Salary Management System
+    </footer>
+
+    <script>
+        $(document).ready(function () {
+            const emp = JSON.parse(localStorage.getItem('currentEmployee') || 'null');
+
+            if (!emp) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            $('#nav-emp-name').text('👤 ' + emp.name);
+
+            const basic = parseFloat(emp.salary);
+            const hra   = Math.round(basic * 0.03);
+            const da    = Math.round(basic * 0.03);
+            const ta    = Math.round(basic * 0.02);
+            const pf    = Math.round(basic * 0.02);
+            const it    = Math.round(basic * 0.02);
+            const net   = basic + hra + da + ta - pf - it;
+
+            const fmt = v => '₹' + Math.round(v).toLocaleString('en-IN');
+
+            const now = new Date();
+            const monthStr = now.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            const slipHTML = `
+                <div class="slip">
+                    <div class="slip-header">
+                        <div class="company">
+                            <h2>EMPLOYEE <span style="color:#c8421a;">PAY</span> SALARY</h2>
+                            <p>PayRoll Pro — Employee Salary Management System</p>
+                        </div>
+                        <div class="slip-badge">Salary Slip</div>
+                    </div>
+
+                    <div class="slip-meta">
+                        <div class="meta-item">
+                            <div class="lbl">Employee Name</div>
+                            <div class="val">${emp.name}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="lbl">Email</div>
+                            <div class="val">${emp.email}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="lbl">Designation</div>
+                            <div class="val">${emp.post}</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="lbl">Pay Period</div>
+                            <div class="val">${monthStr}</div>
+                        </div>
+                    </div>
+
+                    <div class="slip-body">
+                        <div class="section-title">Earnings</div>
+                        <div class="salary-rows">
+                            <div class="salary-row">
+                                <span class="s-label">Basic Salary</span>
+                                <span class="s-val basic">${fmt(basic)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="s-label">HRA — House Rent Allowance <span style="color:#aaa;font-size:.78rem;">(Basic × 3%)</span></span>
+                                <span class="s-val earn">+ ${fmt(hra)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="s-label">DA — Dearness Allowance <span style="color:#aaa;font-size:.78rem;">(Basic × 3%)</span></span>
+                                <span class="s-val earn">+ ${fmt(da)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="s-label">TA — Travel Allowance <span style="color:#aaa;font-size:.78rem;">(Basic × 2%)</span></span>
+                                <span class="s-val earn">+ ${fmt(ta)}</span>
+                            </div>
+                        </div>
+
+                        <div class="section-title">Deductions</div>
+                        <div class="salary-rows">
+                            <div class="salary-row">
+                                <span class="s-label">PF — Provident Fund <span style="color:#aaa;font-size:.78rem;">(Basic × 2%)</span></span>
+                                <span class="s-val deduct">− ${fmt(pf)}</span>
+                            </div>
+                            <div class="salary-row">
+                                <span class="s-label">IT — Income Tax <span style="color:#aaa;font-size:.78rem;">(Basic × 2%)</span></span>
+                                <span class="s-val deduct">− ${fmt(it)}</span>
+                            </div>
+                        </div>
+
+                        <div class="net-row">
+                            <span class="net-label">💰 Net Take-Home Salary</span>
+                            <span class="net-val">${fmt(net)}</span>
+                        </div>
+                    </div>
+
+                    <div class="slip-footer">
+                        This is a system-generated salary slip. For queries, contact your HR/Admin. &nbsp;|&nbsp; Generated on ${new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'long', year:'numeric'})}
+                    </div>
+                </div>`;
+
+            $('#slip-container').html(slipHTML);
+
+            $('#btn-logout').click(function () {
+                localStorage.removeItem('currentEmployee');
+                window.location.href = 'login.html';
+            });
+        });
+    </script>
+</body>
+</html>

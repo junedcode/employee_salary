@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+        rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="jquery.js"></script>
+    <title>Login — PayRoll Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow-x: hidden;
+            background: rgba(200, 66, 26, .12);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        nav {
+            background-color: black;
+            display: flex;
+            height: 10vh;
+            justify-content: center;
+            border-bottom: 3px solid rgb(160, 32, 32);
+            align-items: center;
+            width: 100%;
+        }
+
+        .heading {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 1.35rem;
+            color: #dbd4d4;
+            letter-spacing: -0.5px;
+            margin-right: auto;
+            cursor: pointer;
+            width: 50%;
+            margin-left: 30px;
+        }
+
+        ul {
+            width: 35%;
+            text-align: center;
+        }
+
+        ul li {
+            display: inline;
+        }
+
+        ul li a {
+            margin: 0px 20px;
+            padding: 6px 5px;
+            list-style: none;
+            text-decoration: none;
+            font-family: 'Syne', sans-serif;
+            font-size: 1rem;
+            color: #dbd4d4;
+            letter-spacing: -0.5px;
+            cursor: pointer;
+        }
+
+        .loginarea {
+            display: inline;
+        }
+
+        .loginarea #lo {
+            background-color: #c8421a;
+            border-radius: 5px;
+            padding: 8px 20px;
+        }
+
+        li a:hover {
+            background-color: rgba(255, 255, 255, .08);
+            color: #fff;
+            border: 1.5px solid rgba(77, 73, 73, 0.25);
+            border-radius: 5px;
+        }
+
+        #text-color {
+            color: #c8421a;
+        }
+
+        .page-wrap {
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.10);
+        }
+
+        .login-card h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            color: #0d0d0d;
+        }
+
+        .login-card h2 span {
+            color: #c8421a;
+        }
+
+        .subtitle {
+            color: #7a7468;
+            font-size: .9rem;
+            margin-bottom: 28px;
+        }
+
+         .role-toggle {
+            display: flex;
+            background: #f5f0e8;
+            border: 1.5px solid #d8d3c8;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 24px;
+            gap: 4px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .88rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: #7a7468;
+            transition: all .2s;
+        }
+
+        .role-btn.active {
+            background: #ffffff;
+            color: #0d0d0d;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
+        }
+
+        .role-btn .icon {
+            margin-right: 6px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: .82rem;
+            font-weight: 600;
+            letter-spacing: .4px;
+            text-transform: uppercase;
+            color: #7a7468;
+            margin-bottom: 7px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1.5px solid #d8d3c8;
+            border-radius: 6px;
+            background: #f5f0e8;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .95rem;
+            color: #0d0d0d;
+            outline: none;
+            transition: border-color .18s;
+        }
+
+        .form-control:focus {
+            border-color: #c8421a;
+            background: #fff;
+        }
+
+        .admin-hint {
+            background: rgba(200, 66, 26, .07);
+            border: 1px dashed rgba(200, 66, 26, .4);
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: .82rem;
+            color: #c8421a;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .error-msg {
+            color: #c8421a;
+            font-size: .78rem;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .btn-full {
+            width: 100%;
+            padding: 13px;
+            background: #c8421a;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 6px;
+            letter-spacing: .4px;
+            transition: background .15s;
+        }
+
+        .btn-full:hover {
+            background: #a83516;
+        }
+
+        footer {
+            background: #0d0d0d;
+            color: #bebebe;
+            text-align: center;
+            padding: 24px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="heading" onclick="window.location.href='pro.html'">EMPLOYEE <span id="text-color">PAY
+                </span>SALARY</div>
+            <ul>
+                <li><a href="pro.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <div class="loginarea">
+                    <li><a id="lo" href="login.html">Login</a></li>
+                </div>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="page-wrap">
+            <div class="login-card">
+                <h2>Welcome <span>Back</span></h2>
+                <p class="subtitle">Sign in to your PayRoll Pro account</p>
+                <div class="role-toggle">
+                    <button class="role-btn active" id="btn-role-admin" onclick="setRole('admin')">
+                        <span class="icon">🛡️</span> Admin
+                    </button>
+                    <button class="role-btn" id="btn-role-emp" onclick="setRole('employee')">
+                        <span class="icon">👤</span> Employee
+                    </button>
+                </div>
+
+                <div class="admin-hint" id="admin-hint">
+                    Admin credentials: <strong>admin.com</strong> / <strong>admin123</strong>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" class="form-control" id="login-email" placeholder="your@email.com">
+                    <div class="error-msg" id="err-email">Please enter a valid email.</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" class="form-control" id="login-pass" placeholder="••••••••">
+                    <div class="error-msg" id="err-pass">Password is required.</div>
+                </div>
+
+                <div class="error-msg" id="err-general" style="font-size:.88rem; margin-bottom:10px;"></div>
+
+                <button class="btn-full" id="btn-login">Sign In →</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        © 2025 <span id="text-color">PayRoll Pro</span> — Employee Salary Management System
+    </footer>
+
+    <script>
+        let currentRole = 'admin';
+
+        function setRole(role) {
+            currentRole = role;
+            if (role === 'admin') {
+                $('#btn-role-admin').addClass('active');
+                $('#btn-role-emp').removeClass('active');
+                $('#admin-hint').fadeIn(200);
+            } else {
+                $('#btn-role-emp').addClass('active');
+                $('#btn-role-admin').removeClass('active');
+                $('#admin-hint').fadeOut(200);
+            }
+            $('.error-msg').hide();
+            $('#login-email, #login-pass').val('');
+        }
+
+        $(document).ready(function () {
+            $('#admin-hint').show();
+
+            $('#btn-login').click(function () {
+                const email = $('#login-email').val().trim();
+                const pass = $('#login-pass').val().trim();
+
+                if (currentRole === 'admin') {
+                    if (email === 'admin@pay.com' && pass === 'admin123') {
+                        window.location.href = 'dashborad.html';
+                    } else {
+                        $('#err-general').text('Invalid admin credentials.').show();
+                    }
+                } else {
+                    const employees = JSON.parse(localStorage.getItem('employees') || '[]');
+                    const found = employees.find(e => e.email === email && e.password === pass);
+
+                    if (found) {
+                        localStorage.setItem('currentEmployee', JSON.stringify(found));
+                        window.location.href = 'employee-slip.html';
+                    } else {
+                        $('#err-general').text('Invalid Employee credentials.').show();
+                    }
+                }
+            });
+
+             $(document).keypress(function (e) {
+                if (e.which === 13) $('#btn-login').click();
+            });
+        });
+    </script>
+</body>
+
+</html>
